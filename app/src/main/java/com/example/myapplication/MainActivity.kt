@@ -11,7 +11,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -71,6 +74,7 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun App(viewModel: PessoaViewModel, mainActivity: MainActivity) {
+
     var nome by remember {
         mutableStateOf( "")
     }
@@ -82,8 +86,16 @@ fun App(viewModel: PessoaViewModel, mainActivity: MainActivity) {
         telefone
     )
 
+    var pessoaList by remember {
+        mutableStateOf(listOf<Pessoa>())
+    }
+
+    viewModel.getPessoa().observe(mainActivity) {
+        pessoaList = it
+    }
+
     Column(
-        Modifier.background(Color.Black)
+        Modifier.background(Color.White)
     ) {
         Row( Modifier.padding(20.dp) ){
 
@@ -131,7 +143,37 @@ fun App(viewModel: PessoaViewModel, mainActivity: MainActivity) {
                 Text("Cadastrar")
             }
         }
-        Row(Modifier.padding(20.dp)) {}
+        Row(Modifier.padding(20.dp)) {
+
+        }
+        Divider()
+        LazyColumn {
+            items(pessoaList) {
+                pessoa ->
+                Row(
+                    Modifier
+                        .fillMaxWidth(),
+                       Arrangement.Center
+                ) {
+                    Column(
+                        Modifier
+                            .fillMaxWidth(0.7f),
+                            Arrangement.Center
+                    ) {
+                        Text(text = "${pessoa.nome}")
+                    }
+                    Column(
+                        Modifier
+                            .fillMaxWidth(0.5f),
+                            Arrangement.Center
+                    ) {
+                        Text(text = "${pessoa.telefone}")
+                    }
+                }
+                Divider()
+
+            }
+        }
     }
 }
 
